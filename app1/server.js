@@ -60,7 +60,8 @@ app.get('/', (req, res) => {
     res.render('index', { 
         user: req.session.user,
         appName: 'Application 1',
-        appDescription: 'Direct authentication with Keycloak1 (IdP)'
+        appDescription: 'Direct authentication with Keycloak1 (IdP)',
+        error: req.query.error
     });
 });
 
@@ -105,7 +106,7 @@ app.get('/callback', async (req, res) => {
         res.redirect('/profile');
     } catch (error) {
         console.error('Callback error:', error);
-        res.redirect('/login?error=auth_failed');
+        res.redirect('/?error=auth_failed');
     }
 });
 

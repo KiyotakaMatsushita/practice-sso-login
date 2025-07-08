@@ -60,7 +60,8 @@ app.get('/', (req, res) => {
     res.render('index', { 
         user: req.session.user,
         appName: 'Application 2',
-        appDescription: 'SSO authentication via Keycloak2 (SP) → Keycloak1 (IdP)'
+        appDescription: 'SSO authentication via Keycloak2 (SP) → Keycloak1 (IdP)',
+        error: req.query.error
     });
 });
 
@@ -106,7 +107,7 @@ app.get('/callback', async (req, res) => {
         res.redirect('/profile');
     } catch (error) {
         console.error('Callback error:', error);
-        res.redirect('/login?error=auth_failed');
+        res.redirect('/?error=auth_failed');
     }
 });
 

@@ -37,6 +37,9 @@
                         <span class="flow-item">Keycloak1 (IdP)</span>
                     </div>
                     <a href="/login" class="btn btn-primary">Login with SSO</a>
+                    <% if (error === 'auth_failed') { %>
+                        <p class="error-message">Authentication failed. Please try again.</p>
+                    <% } %>
                 </div>
             <% } %>
 
