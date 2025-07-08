@@ -4,11 +4,17 @@
 - Docker & Docker Compose
 - Node.js (v14以上)
 - jq コマンド（セットアップスクリプト用）
+  - macOS: `brew install jq`
+  - Ubuntu/Debian: `sudo apt-get install jq`
+  - CentOS/RHEL: `sudo yum install jq`
 
 ## クイックスタート
 
 ### 1. 環境の起動
 ```bash
+# プロジェクトルートで実行
+cd practice-sso-login
+
 # Dockerコンテナの起動とKeycloakの設定
 ./scripts/start.sh
 ```
@@ -37,7 +43,16 @@ npm start
 ```
 
 ### 3. 動作確認
+
+#### セットアップの検証
 ```bash
+# セットアップが正しく完了しているか確認
+./scripts/verify-setup.sh
+```
+
+#### SSOテスト
+```bash
+# SSOの動作テスト
 ./scripts/test-sso.sh
 ```
 
@@ -83,6 +98,12 @@ npm start
    - Keycloak1 → Keycloak2
    - Keycloak2 → App2
 
+## 初回起動時の注意点
+
+- Keycloakの起動には数分かかる場合があります
+- `setup-keycloak.sh`が失敗する場合は、Keycloakが完全に起動するまで待ってから再実行してください
+- 環境変数は`.env`ファイルに自動保存されます
+
 ## トラブルシューティング
 
 ### ポートが使用中の場合
@@ -99,9 +120,19 @@ lsof -i :3001
 
 ### セットアップが失敗する場合
 ```bash
-# 全データを削除してやり直す
+# セットアップの状態を確認
+./scripts/verify-setup.sh
+
+# 問題がある場合は、全データを削除してやり直す
 docker-compose down -v
 ./scripts/start.sh
+```
+
+### .envファイルの問題
+```bash
+# .envファイルをリセット
+cp .env.example .env
+./scripts/setup-keycloak.sh
 ```
 
 ### ログの確認
@@ -119,3 +150,16 @@ docker logs keycloak2-sp
 ```
 
 データも削除する場合は、プロンプトで `y` を入力してください。
+
+## 次回以降の起動
+
+一度セットアップが完了していれば、次回以降は以下のコマンドで起動できます：
+
+```bash
+# Dockerコンテナのみ起動
+docker-compose up -d
+
+# アプリケーションの起動
+cd app1 && npm start
+cd app2 && npm start
+```

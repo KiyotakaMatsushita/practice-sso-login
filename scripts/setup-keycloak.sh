@@ -163,9 +163,9 @@ setup_keycloak1() {
     
     echo -e "${GREEN}Broker Client Secret: $BROKER_SECRET${NC}"
     
-    # シークレットを.envファイルに保存
-    echo "APP1_CLIENT_SECRET=$APP1_SECRET" >> .env
-    echo "KEYCLOAK2_BROKER_SECRET=$BROKER_SECRET" >> .env
+    # シークレットを.envファイルに保存（既存の値を更新）
+    update_env_variable "APP1_CLIENT_SECRET" "$APP1_SECRET"
+    update_env_variable "KEYCLOAK2_BROKER_SECRET" "$BROKER_SECRET"
 }
 
 # Keycloak2 (SP) の設定
@@ -254,7 +254,27 @@ setup_keycloak2() {
         -H "Authorization: Bearer $token" | jq -r '.value')
     
     echo -e "${GREEN}App2 Client Secret: $APP2_SECRET${NC}"
-    echo "APP2_CLIENT_SECRET=$APP2_SECRET" >> .env
+    
+    # シークレットを.envファイルに保存（既存の値を更新）
+    update_env_variable "APP2_CLIENT_SECRET" "$APP2_SECRET"
+}
+
+# 環境変数を更新する関数
+update_env_variable() {
+    local key=$1
+    local value=$2
+    
+    if grep -q "^$key=" .env 2>/dev/null; then
+        # 既存の値を更新（macOSとLinuxの両方で動作）
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            sed -i '' "s|^$key=.*|$key=$value|" .env
+        else
+            sed -i "s|^$key=.*|$key=$value|" .env
+        fi
+    else
+        # 新規追加
+        echo "$key=$value" >> .env
+    fi
 }
 
 # メイン処理
@@ -268,6 +288,9 @@ main() {
     # .envファイルの初期化
     if [ ! -f .env ]; then
         cp .env.example .env
+    else
+        # 既存の.envファイルがある場合、必要な変数が存在するか確認
+        echo -e "${YELLOW}既存の.envファイルを使用します${NC}"
     fi
     
     # Keycloakの起動を待つ

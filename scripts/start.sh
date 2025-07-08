@@ -7,6 +7,9 @@ NC='\033[0m' # No Color
 
 echo -e "${GREEN}=== Starting Keycloak SSO Environment ===${NC}"
 
+# ディレクトリをスクリプトの親ディレクトリに移動
+cd "$(dirname "$0")/.."
+
 # Docker Composeの起動
 echo -e "${YELLOW}Starting Docker containers...${NC}"
 docker-compose up -d
@@ -17,14 +20,25 @@ sleep 10
 
 # Keycloakのセットアップ
 echo -e "${YELLOW}Running Keycloak setup...${NC}"
-./scripts/setup-keycloak.sh
+bash ./scripts/setup-keycloak.sh
 
 echo -e "\n${GREEN}=== Environment is ready! ===${NC}"
 echo -e "${YELLOW}Services:${NC}"
-echo "- Keycloak1 (IdP): http://localhost:8080"
-echo "- Keycloak2 (SP): http://localhost:8180"
+echo "- Keycloak1 (IdP): http://localhost:8080/admin"
+echo "- Keycloak2 (SP): http://localhost:8180/admin"
 echo "- Mailhog: http://localhost:8025"
 echo ""
+echo -e "${YELLOW}Admin credentials:${NC}"
+echo "- Username: admin"
+echo "- Password: admin"
+echo ""
+echo -e "${YELLOW}Test user:${NC}"
+echo "- Username: testuser"
+echo "- Password: password123"
+echo ""
 echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Start App1: cd app1 && npm start"
-echo "2. Start App2: cd app2 && npm start"
+echo "1. Start App1: cd app1 && npm install && npm start"
+echo "2. Start App2: cd app2 && npm install && npm start"
+echo ""
+echo -e "${GREEN}Quick test command:${NC}"
+echo "./scripts/test-sso.sh"
