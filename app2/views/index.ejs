@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= appName %> - Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><%= appName %></h1>
+            <p class="subtitle"><%= appDescription %></p>
+        </header>
+
+        <main>
+            <% if (user) { %>
+                <div class="welcome-box">
+                    <h2>Welcome, <%= user.firstName %> <%= user.lastName %>!</h2>
+                    <p>You are successfully logged in via SSO.</p>
+                    <p class="sso-badge">🔐 SSO Authentication Active</p>
+                    <div class="button-group">
+                        <a href="/profile" class="btn btn-primary">View Profile</a>
+                        <a href="/sso-info" class="btn btn-info">SSO Flow Info</a>
+                        <a href="/logout" class="btn btn-secondary">Logout</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="login-box">
+                    <h2>Welcome to <%= appName %></h2>
+                    <p>This application demonstrates SSO authentication through:</p>
+                    <div class="flow-diagram">
+                        <span class="flow-item">App2</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">Keycloak2 (SP)</span>
+                        <span class="flow-arrow">→</span>
+                        <span class="flow-item">Keycloak1 (IdP)</span>
+                    </div>
+                    <a href="/login" class="btn btn-primary">Login with SSO</a>
+                </div>
+            <% } %>
+
+            <div class="info-section">
+                <h3>About SSO in this Application</h3>
+                <p>This is Application 2, which uses a more complex SSO flow:</p>
+                <ul>
+                    <li>App2 delegates authentication to Keycloak2</li>
+                    <li>Keycloak2 acts as a Service Provider and delegates to Keycloak1</li>
+                    <li>Keycloak1 is the ultimate Identity Provider</li>
+                    <li>If you're already logged in to App1, you'll be automatically authenticated here!</li>
+                </ul>
+            </div>
+
+            <div class="test-sso">
+                <h3>Test SSO Between Applications</h3>
+                <p>Compare the authentication experience between direct and SSO authentication:</p>
+                <a href="http://localhost:3000" class="btn btn-info" target="_blank">Open Application 1</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Keycloak SSO Demo - Application 2</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= appName %> - SSO Flow Information</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><%= appName %> - SSO Flow Information</h1>
+            <nav>
+                <a href="/" class="btn btn-secondary">Home</a>
+                <a href="/profile" class="btn btn-secondary">Profile</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="sso-flow-explanation">
+                <h2>How SSO Authentication Works</h2>
+                <p>You are logged in as: <strong><%= user.username %></strong></p>
+                
+                <div class="flow-steps">
+                    <h3>Authentication Flow Steps</h3>
+                    <% Object.entries(flowDetails).forEach(([key, value], index) => { %>
+                        <div class="flow-step">
+                            <div class="step-number"><%= index + 1 %></div>
+                            <div class="step-content">
+                                <p><%= value %></p>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+
+                <div class="flow-diagram-detailed">
+                    <h3>Visual Flow Diagram</h3>
+                    <div class="diagram">
+                        <div class="actor">User</div>
+                        <div class="arrow-down">↓</div>
+                        <div class="component app">App2 (Port 3001)</div>
+                        <div class="arrow-down">↓</div>
+                        <div class="component keycloak">Keycloak2 (Port 8180)<br><small>Acting as SP</small></div>
+                        <div class="arrow-down">↓</div>
+                        <div class="component keycloak-idp">Keycloak1 (Port 8080)<br><small>Acting as IdP</small></div>
+                        <div class="arrow-up">↑</div>
+                        <div class="result">Authentication Success</div>
+                    </div>
+                </div>
+
+                <div class="technical-details">
+                    <h3>Technical Details</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <h4>Protocol</h4>
+                            <p>OpenID Connect (OIDC)</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Grant Type</h4>
+                            <p>Authorization Code Flow</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Token Type</h4>
+                            <p>JWT (JSON Web Token)</p>
+                        </div>
+                        <div class="detail-item">
+                            <h4>Session Management</h4>
+                            <p>Federated Sessions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="urls-info">
+                    <h3>Endpoint URLs</h3>
+                    <ul>
+                        <li><strong>App2 Login:</strong> <code>http://localhost:3001/login</code></li>
+                        <li><strong>Keycloak2 Auth:</strong> <code>http://localhost:8180/realms/sp-realm/protocol/openid-connect/auth</code></li>
+                        <li><strong>Keycloak1 Auth:</strong> <code>http://localhost:8080/realms/idp-realm/protocol/openid-connect/auth</code></li>
+                        <li><strong>Token Endpoint:</strong> <code>http://localhost:8180/realms/sp-realm/protocol/openid-connect/token</code></li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Keycloak SSO Demo - Application 2</p>
+        </footer>
+    </div>
+</body>
+</html>

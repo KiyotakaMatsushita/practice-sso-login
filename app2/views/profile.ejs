@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= appName %> - Profile</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><%= appName %> - User Profile</h1>
+            <nav>
+                <a href="/" class="btn btn-secondary">Home</a>
+                <a href="/sso-info" class="btn btn-info">SSO Info</a>
+                <a href="/logout" class="btn btn-secondary">Logout</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="profile-card">
+                <h2>User Information</h2>
+                <p class="sso-badge">🔐 Authenticated via: <%= user.authFlow %></p>
+                <div class="profile-info">
+                    <div class="info-row">
+                        <span class="label">User ID:</span>
+                        <span class="value"><%= user.id %></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Username:</span>
+                        <span class="value"><%= user.username %></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span class="value"><%= user.email %></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">First Name:</span>
+                        <span class="value"><%= user.firstName %></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Last Name:</span>
+                        <span class="value"><%= user.lastName %></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Auth Flow:</span>
+                        <span class="value"><%= user.authFlow %></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="token-info">
+                <h3>Token Information</h3>
+                <details>
+                    <summary>Access Token (click to expand)</summary>
+                    <pre class="token-display"><%= user.accessToken %></pre>
+                </details>
+                <% if (user.refreshToken) { %>
+                <details>
+                    <summary>Refresh Token (click to expand)</summary>
+                    <pre class="token-display"><%= user.refreshToken %></pre>
+                </details>
+                <% } %>
+            </div>
+
+            <div class="sso-comparison">
+                <h3>SSO Authentication Comparison</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-item">
+                        <h4>Application 1 (Direct Auth)</h4>
+                        <p>App1 → Keycloak1</p>
+                        <a href="http://localhost:3000/profile" class="btn btn-sm" target="_blank">View App1 Profile</a>
+                    </div>
+                    <div class="comparison-item">
+                        <h4>Application 2 (SSO Auth)</h4>
+                        <p>App2 → Keycloak2 → Keycloak1</p>
+                        <p class="current-app">You are here</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Keycloak SSO Demo - Application 2</p>
+        </footer>
+    </div>
+</body>
+</html>

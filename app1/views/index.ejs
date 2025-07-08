@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= appName %> - Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><%= appName %></h1>
+            <p class="subtitle"><%= appDescription %></p>
+        </header>
+
+        <main>
+            <% if (user) { %>
+                <div class="welcome-box">
+                    <h2>Welcome, <%= user.firstName %> <%= user.lastName %>!</h2>
+                    <p>You are successfully logged in.</p>
+                    <div class="button-group">
+                        <a href="/profile" class="btn btn-primary">View Profile</a>
+                        <a href="/logout" class="btn btn-secondary">Logout</a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="login-box">
+                    <h2>Welcome to <%= appName %></h2>
+                    <p>This application demonstrates direct authentication with Keycloak1 (Identity Provider).</p>
+                    <a href="/login" class="btn btn-primary">Login with Keycloak</a>
+                </div>
+            <% } %>
+
+            <div class="info-section">
+                <h3>About this Application</h3>
+                <p>This is Application 1, which authenticates directly with Keycloak1 (the Identity Provider).</p>
+                <ul>
+                    <li>Direct authentication flow</li>
+                    <li>No SSO broker involved</li>
+                    <li>Connected to: <code>http://localhost:8080</code></li>
+                </ul>
+            </div>
+
+            <div class="test-sso">
+                <h3>Test SSO</h3>
+                <p>After logging in here, try accessing Application 2 to see SSO in action:</p>
+                <a href="http://localhost:3001" class="btn btn-info" target="_blank">Open Application 2</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>Keycloak SSO Demo - Application 1</p>
+        </footer>
+    </div>
+</body>
+</html>

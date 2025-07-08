@@ -1,0 +1,107 @@
+services:
+  # PostgreSQL for Keycloak1 (IdP)
+  postgres1:
+    image: postgres:15-alpine
+    container_name: keycloak-postgres1
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak123
+    ports:
+      - "54321:5432"
+    volumes:
+      - postgres1_data:/var/lib/postgresql/data
+    networks:
+      - keycloak-network
+
+  # PostgreSQL for Keycloak2 (SP)
+  postgres2:
+    image: postgres:15-alpine
+    container_name: keycloak-postgres2
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloak123
+    ports:
+      - "54322:5432"
+    volumes:
+      - postgres2_data:/var/lib/postgresql/data
+    networks:
+      - keycloak-network
+
+  # Keycloak1 - Identity Provider (IdP)
+  keycloak1:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: keycloak1-idp
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres1:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak123
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8080
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres1
+    command: start-dev
+    volumes:
+      - ./keycloak1/themes:/opt/keycloak/themes
+      - ./keycloak1/providers:/opt/keycloak/providers
+    networks:
+      - keycloak-network
+
+  # Keycloak2 - Service Provider (SP)
+  keycloak2:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: keycloak2-sp
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres2:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak123
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8180
+      KC_HOSTNAME_STRICT: false
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HTTP_ENABLED: true
+      KC_HTTP_PORT: 8080
+      KC_HTTP_OFFSET: 100
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8180:8080"
+    depends_on:
+      - postgres2
+    command: start-dev
+    volumes:
+      - ./keycloak2/themes:/opt/keycloak/themes
+      - ./keycloak2/providers:/opt/keycloak/providers
+    networks:
+      - keycloak-network
+
+  # Mailhog for email testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: keycloak-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - keycloak-network
+
+networks:
+  keycloak-network:
+    driver: bridge
+
+volumes:
+  postgres1_data:
+  postgres2_data:
