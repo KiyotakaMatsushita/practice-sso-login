@@ -145,7 +145,7 @@ setup_keycloak1() {
             "directAccessGrantsEnabled": false,
             "serviceAccountsEnabled": false,
             "authorizationServicesEnabled": false,
-            "redirectUris": ["http://localhost:8180/realms/sp-realm/broker/keycloak1-oidc/endpoint"],
+            "redirectUris": ["http://localhost:8180/realms/sp-realm/broker/keycloak1-oidc/endpoint", "http://localhost:8180/auth/realms/sp-realm/broker/keycloak1-oidc/endpoint"],
             "webOrigins": ["http://localhost:8180"]
         }'
     
